@@ -12,3 +12,7 @@ As described above, the component is a reusable modal card with title, message, 
 
 While it's true that you can create your modal component depending on your purpose, my modal card is meant to better present confirmation dialogues or alerts with a customizable title and message, based on the specific scenario, as well as specific actions to perform upon confirmation or cancellation. However, this component shall serve you as a reference frame as far as how you will go about designing _your_ components based on the user experience needs.
 
+With that out of the way, let's see how I implemented it.
+
+First off, 
+
