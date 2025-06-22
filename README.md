@@ -19,7 +19,7 @@ Also, this is pretty _similar_ to the approach that Apple uses.
 
 ### First Implementation Layer of `ModalCard` and Why this Approach is Scalable and Flexible
 
-Before getting straight to the final implementation of `ModalCard`, I would like to start presenting you the first layer of my implementation, which starts being very general and generic. As I go about explaining it, I'll outline the pros and cons, and what would a _similar_ solution be in terms of code design to face those cons.
+Before getting straight to the final implementation of `ModalCard`, I would like to start presenting you the first layer of my implementation, which starts being very general and generic. As I go about explaining it, I'll outline the pros and cons, and what would a solution be in terms of code design to face those cons.
 
 The following is the first layer of my implementation for a `ModalCard` view
 
