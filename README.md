@@ -12,7 +12,10 @@ As described above, the component is a reusable modal card with title, message, 
 
 While it's true that you can create your modal component depending on your purpose, my modal card is meant to better present confirmation dialogues or alerts with a customizable title and message, based on the specific scenario, as well as specific actions to perform upon confirmation or cancellation. However, this component shall serve you as a reference frame as far as how you will go about designing _your_ components based on the user experience needs.
 
-With that out of the way, let's see how I implemented it.
+With that out of the way, let's see how I implemented it, and why I came up with that specific solution. I'll walk you through the design-thinking process, and why this solution is _encapsulating_ and _scalable_.
+Also, this is pretty _similar_ to the approach that Apple uses.
+
+**Note**: Take into account the fact that we can't see the actual implementation used by Apple since SwiftUI is a **closed-source** framework. However, I'm using reverse engineering by inspecting objects at runtime using Xcode's LLDB, inferring the behavior by checking out Apple's documentation, as well as referencing Apple's public APIs. What I think is important is that after having gone through this README, you may appreciate the design-thinking approach, even to building a simple API as a `ModalCard`, which is meant to lay the foundation for more complex SwiftUI architecture patterns.
 
 First off, 
 
