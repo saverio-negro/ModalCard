@@ -392,6 +392,17 @@ However, before we do this, let's actually create this supporting struct to our 
 ```swift
 public struct ModalCard<Primary: View, Secondary: View>: View {
 
+  // MARK: - ModalCard.Button (Factory struct)
+
+  public struct Button {
+
+    enum ButtonType {
+
+    }
+
+    
+  }
+
   // MARK: - Properties
 
   let title: String
@@ -409,8 +420,8 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
   ) {
     self.title = title
     self.message = message
-    self.primaryAction = primaryAction()
-    self.secondaryAction = secondaryAction()
+    self.primaryButton = primaryButton
+    self.secondaryButton = secondaryButton
   }
 
   // MARK: - Body
@@ -443,12 +454,11 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
 }
 ```
 
-Since the `Button` struct is meant to support the `ModalCard` struct, and relates to it, I define it within the `ModalCard` struct. Yes, that's a common pattern for when you have a type that associates with and belongs to another one. In this example case, `Button` is going to be part of the `ModalCard` struct and is going to be a completely different `struct` from our native `SwiftUI.Button`; in that, `ModalCard.Button` is our **Factory struct**, which provides **semantic API surface** and **encapsulates** the internal implementation detail from API users.
+1. Since the `Button` struct is meant to support the `ModalCard` struct, and relates to it, I define it within the `ModalCard` struct. Yes, that's a common pattern for when you have a type that associates with and belongs to another one. In this example case, `Button` is going to be part of the `ModalCard` struct and is going to be a completely different `struct` from our native `SwiftUI.Button`; in that, `ModalCard.Button` is our **Factory struct**, which provides a **semantic API surface** and **encapsulates** the internal implementation detail from the users of our `ModalCard` API.
 
-Notice that I also changed the name of our properties from `primaryAction` and `secondaryAction` to `primaryButton` and `secondaryButton`, since our implementation is fully predictive and we know what to expect from the user; that's because we are now to decide and implement the options as well as what to return internally — `Button` objects, in our case — via our new interface.
+2. Notice that I also changed the name of our properties from `primaryAction` and `secondaryAction` to `primaryButton` and `secondaryButton`, since our implementation is fully predictive and we know what to expect from the user; that's because _we_ are now to decide and implement the options as well as what to return internally — `Button` objects, in our case — via our new interface.
 
-
-
+3. Why define a helper `enum`? Well, an `enum` is a supporting strategy to our Factory Method Design Pattern. It serves as a bridging between the `ModalCard` and `ModalCard.Button` to communicate which `SwiftUI.Button` to render within the `body` property at due time. This pattern is also used by SwiftUI to allow communication between factory structs (e.g., `Font`), and the appropriate modifier (e.g., `.font()` modifier) of type `ViewModifier`, as the SwiftUI likely uses an `enum` or `descriptor` to talk to the `ViewModifier` for it to know which `TextStyle` to apply, which will eventually be written to the environment of the `View` object the `.font()` modifier gets called on. We are using the same pattern here, and we will eventually have the `ModalCard.Button` factory struct return a `ModalCard.Button` instance, which will hold configuration info as to what type of button to render.
 
 
 
