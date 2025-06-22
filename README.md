@@ -21,5 +21,9 @@ Also, this is pretty _similar_ to the approach that Apple uses.
 
 Before getting straight to the final implementation of `ModalCard`, I would like to start presenting you the first layer of my implementation, which starts being very general and generic. As I go about explaining it, I'll outline the pros and cons, and what would a solution be in terms of code design to face those cons.
 
-The following is the first layer of my implementation for a `ModalCard` view
+The following is the first layer of my implementation for a reusable `ModalCard` view that uses a **slot-based** system (configurable content slots) to accept a title, message, as well as actions to perform upon confirmation or cancellation:
+
+```swift
+
+```
 
