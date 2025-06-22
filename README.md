@@ -101,10 +101,11 @@ Next up,
 ```
 
 In the code above, we define our properties, which are the slots of our `ModalCard` object in which the user can pass its content, and reuse and adapt it based on their needs.
-That includes the `Primary` and `Secondary` views, which are meant to be primary and secondary actions; more specifically, buttons that the user can pass to the modal card and define their behavior.
+That includes the `Primary` and `Secondary` views, which are meant to be primary and secondary actions; more specifically, buttons that the user can define their behavior for, and pass to the modal card.
 
 Let's have a look at the next code snippet and see how we allow the user to pass over this information with our custom initializer:
 
 ```swift
+
 ```
 
