@@ -123,3 +123,5 @@ We are essentially defining four parameters for the `ModalCard` constructor/init
 
 **Note**: I explain the `@ViewBuilder` property wrapper in the last component; namely, the <a href="https://github.com/saverio-negro/Card">Card View Component</a>. Make sure to check it out!
 
+In the code block relative to the constructor, we assign the `primaryAction` and `secondaryAction` properties the views that the user-defined functions — being passed to the `ModalCard` object — return; in fact, notice that we are calling them — `primaryAction()` and `secondaryAction()` — since the initializer is passed a reference of those functions in memory, and to run their associated code blocks, we need to invoke them, which entails appending a set of parentheses.
+
