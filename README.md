@@ -371,7 +371,14 @@ Alert(
 
 Actually, many of SwiftUI's native components are built using a similar pattern.
 
-Whenever you write `.<option>`, just know that you are most likely tapping into either a static method, or computed property.
+Go into Xcode, or your Swift playground, and try it. You'll notice that either under `primaryButton`, or `secondaryButton`, you are provided options.
+
+Whenever you write `.<option>`, just know that you are most likely tapping into either a `static` method, or a `static` computed property. `static` is the key, because it allows for abstraction, and encapsulation of the main code that actually creates those buttons, and the user is provided with a pre-defined interface where they just need to type in the related contents, under specific parameters.
+
+Also, if you peek into the type of the `primaryButton` parameter, you'll read `Alert.Button`, which means that Apple has build a custom `Button` struct inside of the `Alert` struct, which is totally different from the `SwiftUI.Button` type, our good ol' button.
+
+
+
 
 
 
