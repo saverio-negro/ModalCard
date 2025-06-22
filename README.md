@@ -34,9 +34,29 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
   let secondaryAction: Secondary
 
   // MARK: - Init
+  
+  public init(
+    title: String,
+    message: String,
+    @ViewBuilder primaryAction: () -> Primary,
+    @ViewBuilder secondaryAction: () -> Secondary
+  ) {
+    self.title = title
+    self.message = message
+    self.primaryAction = primaryAction()
+    self.secondaryAction = secondaryAction()
+  }
 
-  public init() {
+  // MARK: - Body
 
+  public var body: some View {
+    VStack {
+      Text(title)
+        .font(.headline)
+
+      Text(message)
+        .font(.subheadline)
+    }
   }
 }
 ```
