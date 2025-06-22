@@ -53,10 +53,20 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
     VStack {
       Text(title)
         .font(.headline)
+        .foregroundStyle(.primary)
 
       Text(message)
         .font(.subheadline)
+        .multilineTextAlignment(.center)
+        .foregroundColor(.secondary)
     }
+    .padding()
+    .background(
+      RoundedRectangle(cornerRadius: 20, style: .continuous)
+        .fill(Color.white)
+        .shadown(radius: 5)
+    )
+    .padding()
   }
 }
 ```
