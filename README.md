@@ -50,15 +50,21 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
   // MARK: - Body
 
   public var body: some View {
-    VStack {
-      Text(title)
-        .font(.headline)
-        .foregroundStyle(.primary)
+      VStack(spacing: 15) {
+          Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
 
-      Text(message)
-        .font(.subheadline)
-        .multilineTextAlignment(.center)
-        .foregroundStyle(.secondary)
+          Text(message)
+            .font(.subheadline)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+          
+          HStack(spacing: 15) {
+              secondaryAction
+              primaryAction
+          }
+          .padding()
     }
     .padding()
     .background(
