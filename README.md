@@ -24,6 +24,20 @@ Before getting straight to the final implementation of `ModalCard`, I would like
 The following is the first layer of my implementation for a reusable `ModalCard` view that uses a **slot-based** system (configurable content-slots/parameters) to accept a title, message, as well as actions to perform upon confirmation or cancellation:
 
 ```swift
+public struct ModalCard<Primary: View, Secondary: View>: View {
 
+  // MARK: - Properties
+
+  let title: String
+  let message: String
+  let primaryAction: Primary
+  let secondaryAction: Secondary
+
+  // MARK: - Init
+
+  public init() {
+
+  }
+}
 ```
 
