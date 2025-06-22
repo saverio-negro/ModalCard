@@ -390,32 +390,27 @@ First off, let me show you why you wouldn't want to use **generics** when implem
 However, before we do this, let's actually create this supporting struct to our `ModalCard` view, much similar to how Apple builds it within the native `Alert` struct — `Alert.Button`.
 
 ```swift
-public struct ModalCard: View {
-
-  // MARK: - ModalCard.Button struct (Factory struct)
-  public struct Button {
-    
-  }
+public struct ModalCard<Primary: View, Secondary: View>: View {
 
   // MARK: - Properties
 
   let title: String
   let message: String
-  let primaryAction: Button<Text>
-  let secondaryAction: Button<Text>
+  let primaryButton: Primary
+  let secondaryButton: Secondary
 
   // MARK: - Init
   
   public init(
     title: String,
     message: String,
-    primaryAction: @escaping () -> Void,
-    secondaryAction: @escaping () -> Void
+    primaryButton: Primary,
+    secondaryButton: Secondary
   ) {
     self.title = title
     self.message = message
-    self.primaryAction = Button("Delete", action: primaryAction)
-    self.secondaryAction = Button("Cancel", action: secondaryAction)
+    self.primaryAction = primaryAction()
+    self.secondaryAction = secondaryAction()
   }
 
   // MARK: - Body
@@ -432,8 +427,8 @@ public struct ModalCard: View {
             .foregroundStyle(.secondary)
           
           HStack(spacing: 15) {
-              secondaryAction
-              primaryAction
+              secondaryButton
+              primaryButton
           }
           .padding()
     }
@@ -448,7 +443,9 @@ public struct ModalCard: View {
 }
 ```
 
-Because, the `Button` struct is meant to support the `ModalCard` struct, and relates to it, I'm going to define it within the `ModalCard` struct. Yes, that's a common pattern for when you have a type that associates and belongs to another one. In this example case, `Button` is going to be part of the `ModalCard` struct and is going to be a completely different `struct` from our native `SwiftUI.Button`.
+Since the `Button` struct is meant to support the `ModalCard` struct, and relates to it, I define it within the `ModalCard` struct. Yes, that's a common pattern for when you have a type that associates with and belongs to another one. In this example case, `Button` is going to be part of the `ModalCard` struct and is going to be a completely different `struct` from our native `SwiftUI.Button`; in that, `ModalCard.Button` is our **Factory struct**, which provides **semantic API surface** and **encapsulates** the internal implementation detail from API users.
+
+Notice that I also changed the name of our properties from `primaryAction` and `secondaryAction` to `primaryButton` and `secondaryButton`, since our implementation is fully predictive and we know what to expect from the user; that's because we are now to decide and implement the options as well as what to return internally — `Button` objects, in our case — via our new interface.
 
 
 
