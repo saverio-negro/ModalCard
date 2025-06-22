@@ -377,11 +377,15 @@ Whenever you write `.<option>`, just know that you are most likely tapping into 
 
 Also, if you peek into the type of the `primaryButton` parameter, you'll read `Alert.Button`, which means that Apple has build a custom `Button` struct inside of the `Alert` struct, which is totally different from the `SwiftUI.Button` type, our good ol' button.
 
+That means that when you type `.destructive(...)`, you are tapping into a specific `static` method on the `Button` struct within the `Alert` struct (`Alert.Button`), and that's the one that builds that specific kind of button with a _destructive_ role.
+
 Therefore, our `Alert.Button` struct is such that it controls which `Button` type to be returned depending on which `static` method the user taps into.
 
 As a side node, a `static` method or property, is such that it belongs to the `struct` or `class` object itself, and not to any of their instances. However, since a `static` property belongs to the type object itself, any instances of that type (e.g., `Alert`) can tap into that `static` property, which also means that's being shared among all instances of that type.
 
 With that out of the way, let's look at how we would go about implementing a similar predictive and encapsulating approach to Apple's:
+
+
 
 
 
