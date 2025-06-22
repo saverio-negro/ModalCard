@@ -480,9 +480,15 @@ enum ButtonType {
 }
 ```
 
-3. Why define a helper `ButtonType` `enum`? Well, an `enum` is a supporting strategy to our Factory Method Design Pattern. It serves as a bridging between the `ModalCard` and `ModalCard.Button` to communicate which `SwiftUI.Button` to render within the `body` property at due time. This pattern is also used by SwiftUI to allow communication between factory structs (e.g., `Font`), and the appropriate modifier (e.g., `.font()` modifier) of type `ViewModifier`, as the SwiftUI likely uses an `enum` or `descriptor` to talk to the `ViewModifier` for it to know which `TextStyle` to apply, which will eventually be written to the environment of the `View` object the `.font()` modifier gets called on. We are using the same pattern here, and we will eventually have the `ModalCard.Button` factory struct return a `ModalCard.Button` instance, which will hold configuration info as to what type of button to render. Also, notice that I have defined two cases: `destructive`, and `cancel`. Both of them have associated values because we need to store information being passed by the users of the API; namely, either the `action` to perform, as well as the `label` for our buttons.
+3. Why define a helper `ButtonType` `enum`? Well, an `enum` is a supporting strategy to our Factory Method Design Pattern. It serves as a bridging between the `ModalCard` and `ModalCard.Button` to communicate which `SwiftUI.Button` to render within the `body` property at due time. This pattern is also used by SwiftUI to allow communication between factory structs (e.g., `Font`), and the appropriate modifier (e.g., `.font()` modifier) of type `ViewModifier`, as the SwiftUI likely uses an `enum` or `descriptor` to talk to the `ViewModifier` for it to know which `TextStyle` to apply, for example, which will eventually be written to the environment of the `View` object the `.font()` modifier gets called on. We are using the same pattern here, and we will eventually have the `ModalCard.Button` factory struct return a `ModalCard.Button` instance holding the configuration info as to what type of button to render. Also, notice that I have defined two cases for the `ButtonType` enum: `destructive`, and `cancel`. Both of them have associated values because we need to store information being passed by the users of the API; namely, either the `action` to perform, as well as the `label` for our buttons.
 
-4. 
+```swift
+
+```
+
+4. Then, I go about designing the internals of the `ModalCard.Button` struct. They are encapsulated by making use of the `private` access modifier. I go about defining how each `Button` instance is created, as well as its instance members — `type` property. The `ModalCard.Button` instance will be assigned a value to its `type` property upon its instantiation, depending on which `static` method the user calls. This is how we know which `SwiftUI.Button` to render.
+
+6. 
 
 
 
