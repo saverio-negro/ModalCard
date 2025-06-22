@@ -17,5 +17,7 @@ Also, this is pretty _similar_ to the approach that Apple uses.
 
 **Note**: Take into account the fact that we can't see the actual implementation used by Apple since SwiftUI is a **closed-source** framework. However, I'm using reverse engineering by inspecting objects at runtime using Xcode's LLDB, inferring the behavior by checking out Apple's documentation, as well as referencing Apple's public APIs. What I think is important is that after having gone through this README, you may appreciate the design-thinking approach, even to building a simple API as a `ModalCard`, which is meant to lay the foundation for more complex SwiftUI architecture patterns.
 
+### A First Look at a More General Implementation of `ModalCard` and Why this Approach is not Scalable and Encapsulating
+
 First off, 
 
