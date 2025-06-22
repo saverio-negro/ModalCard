@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct ModalCard: View {
     
-    // MARK: - ModalCard.Button struct
+    // MARK: - ModalCard.Button (Factory struct)
     public struct Button {
         
         enum ButtonType {
