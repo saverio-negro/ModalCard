@@ -106,6 +106,20 @@ That includes the `Primary` and `Secondary` views, which are meant to be primary
 Let's have a look at the next code snippet and see how we allow the user to pass over this information with our custom initializer:
 
 ```swift
-
+public init(
+    title: String,
+    message: String,
+    @ViewBuilder primaryAction: () -> Primary,
+    @ViewBuilder secondaryAction: () -> Secondary
+  ) {
+    self.title = title
+    self.message = message
+    self.primaryAction = primaryAction()
+    self.secondaryAction = secondaryAction()
+  }
 ```
+
+We are essentially defining four parameters for the `ModalCard` constructor/initializer. However, the ones we are most interested in are the `primaryAction` and `secondaryAction` parameters. Their type annotation entails a function that doesn't take any parameter and returns either a `Primary` or `Secondary` type. That will allow the user to pass any function under `primaryAction` and `secondaryAction` parameters — usually in the form of a closure — which allows for reusability and adaptability: they can return any object of type `View` from the closure, even multiple child views, and the `@ViewBuilder` property wrapper will bundle those views into a `TupleView` object. 
+
+**Note**: I explain the `@ViewBuilder` property wrapper in the last component; namely, the <a href="https://github.com/saverio-negro/Card">Card View Component</a>. Make sure to check it out!
 
