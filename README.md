@@ -353,7 +353,7 @@ public struct ModalCard: View {
 }
 ```
 
-### Second Layer to our `ModalCard`: Providing Encapsulation and Predictiveness to the Generic Approach (Recommended)
+### Second Layer to our `ModalCard`: Providing Encapsulation and Predictiveness (Recommended)
 
 You now see why I don't suggest using the restricted-type approach; instead, I got you covered with a better generic approach: I will turn my first implementation layer to `ModalCard` into a much more predictive solution, which restricts the choice to the kinds of options that we'd like the user to choose out of; in other words, we control which options are given to the user. This is also scalable, because we are going to update our `ModalCard` struct in such a way that, in later versions of our API, we can also add further options. You will also see how we can abstract away the need for the user to pass over the entire `View` object, and encapsulate the nitty-gritty to provide the user with a better and cleaner interface to deal with.
 
