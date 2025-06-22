@@ -58,7 +58,7 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
       Text(message)
         .font(.subheadline)
         .multilineTextAlignment(.center)
-        .foregroundColor(.secondary)
+        .foregroundStyle(.secondary)
     }
     .padding()
     .background(
