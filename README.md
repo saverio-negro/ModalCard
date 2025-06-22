@@ -159,5 +159,5 @@ Now, I assume that, if you have come here to know a bit more about the SwiftUI a
 
 We are trying to build a card-like UI, where we define `Text` views displaying the values for our `title` and `message` properties. We then define a `RoundedRectangle` shape as a background to our `VStack` view.
 
-What's interesting is the content in our `HStack`. We are actually returning the `View` objects defined by the user and stored on the `primaryAction` and `secondaryAction` properties.
+What's interesting is the content in our `HStack`. We are returning the `View` objects defined by the user and stored on the `primaryAction` and `secondaryAction` properties. We are assuming that `primaryAction` stores a button with a _destructive_ role (right-hand side), while `secondaryAction` stores one with a _cancel_ role (left-hand side).
 
