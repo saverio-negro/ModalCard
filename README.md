@@ -64,7 +64,7 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
     .background(
       RoundedRectangle(cornerRadius: 20, style: .continuous)
         .fill(Color.white)
-        .shadown(radius: 5)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     )
     .padding()
   }
