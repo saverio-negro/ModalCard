@@ -223,6 +223,144 @@ So, I'll tell you right off the bat that Apple leans towards the first approach,
 
 However, before showing you how I would add a second layer to our current version of `ModalCard` to come up with a more Apple-like version, I want to first point out to you why using a restricted type (2. approach) is very limiting, which I suggest you not go for it.
 
+### Implementing `ModalCard` with a Restricted-Type Approach (Not Recommended)
+
+So, I'm just showing you this restricted-type approach to stress over the fact that you shouldn't use it.
+
+Take the following implementation of `ModalCard` using this approach, which enforces the user of the component to pass over a `Button` under the `primaryAction` and `secondaryAction` parameters:
+
+```swift
+public struct ModalCard: View {
+
+  // MARK: - Properties
+
+  let title: String
+  let message: String
+  let primaryAction: Button<Text>
+  let secondaryAction: Button<Text>
+
+  // MARK: - Init
+  
+  public init(
+    title: String,
+    message: String,
+    primaryAction: Button<Text>,
+    secondaryAction: Button<Text>
+  ) {
+    self.title = title
+    self.message = message
+    self.primaryAction = primaryAction
+    self.secondaryAction = secondaryAction
+  }
+
+  // MARK: - Body
+
+  public var body: some View {
+      VStack(spacing: 15) {
+          Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
+
+          Text(message)
+            .font(.subheadline)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+          
+          HStack(spacing: 15) {
+              secondaryAction
+              primaryAction
+          }
+          .padding()
+    }
+    .padding()
+    .background(
+      RoundedRectangle(cornerRadius: 20, style: .continuous)
+        .fill(Color.white)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    )
+    .padding()
+  }
+}
+```
+
+The code above is almost similar to the generic implementation, but we are now forcing a type of `Button<Text>` to be passed by the user, which is now meeting the expectations of our `ModalCard` components, and forces consistent UI logic across the view. However, we can't pass styled buttons, or any other type of buttons. For instance, a `Button` with an `Image` and `Text` isn't allowed. Therefore, it doesn't support cases where our buttons might be more complex than `Button<Text>`.
+
+For instance, this button wouldn't be allowed for the restricted-type implementation:
+
+```swift
+Button {
+    print("OK")
+} label: {
+    Label("OK", systemImage: "checkmark")
+}
+```
+
+That's because that's not a `Button<Text>` type; rather, it's a `Button<Label<Text, Image>>` type.
+
+Furthermore, this other implementation would also be restrictive, which is pretty similar to the one I showed you right above, with the only difference being that we are to decide which type of `Button` to store, and limit the user to defining just the action of those buttons.
+
+```swift
+public struct ModalCard: View {
+
+  // MARK: - Properties
+
+  let title: String
+  let message: String
+  let primaryAction: Button<Text>
+  let secondaryAction: Button<Text>
+
+  // MARK: - Init
+  
+  public init(
+    title: String,
+    message: String,
+    primaryAction: @escaping () -> Void,
+    secondaryAction: @escaping () -> Void
+  ) {
+    self.title = title
+    self.message = message
+    self.primaryAction = Button("Delete", action: primaryAction)
+    self.secondaryAction = Button("Cancel", action: secondaryAction)
+  }
+
+  // MARK: - Body
+
+  public var body: some View {
+      VStack(spacing: 15) {
+          Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
+
+          Text(message)
+            .font(.subheadline)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+          
+          HStack(spacing: 15) {
+              secondaryAction
+              primaryAction
+          }
+          .padding()
+    }
+    .padding()
+    .background(
+      RoundedRectangle(cornerRadius: 20, style: .continuous)
+        .fill(Color.white)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    )
+    .padding()
+  }
+}
+```
+
+### Second Layer to our `ModalCard` Generic Implementation
+
+You now see why I don't suggest using the restricted-type approach; instead, I got you covered with a better generic approach: I will turn my first implementation layer to `ModalCard` into a much more predictive solution, which restricts the choice to the kinds of options that we'd like the user to choose out of; in other words, we control which options are given to the user. This is also scalable, because we are going to update our `ModalCard` struct in such a way that, in later versions of our API, we can also add further options. You will also see how we can abstract away the need for the user to pass over the entire `View` object, and encapsulate the nitty-gritty to provide the user with a better and cleaner interface to deal with.
+
+
+
+
+
 
 
 
