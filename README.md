@@ -353,9 +353,25 @@ public struct ModalCard: View {
 }
 ```
 
-### Second Layer to our `ModalCard` Generic Implementation
+### Second Layer to our `ModalCard`: Providing Encapsulation and Predictiveness to Generic Approach
 
 You now see why I don't suggest using the restricted-type approach; instead, I got you covered with a better generic approach: I will turn my first implementation layer to `ModalCard` into a much more predictive solution, which restricts the choice to the kinds of options that we'd like the user to choose out of; in other words, we control which options are given to the user. This is also scalable, because we are going to update our `ModalCard` struct in such a way that, in later versions of our API, we can also add further options. You will also see how we can abstract away the need for the user to pass over the entire `View` object, and encapsulate the nitty-gritty to provide the user with a better and cleaner interface to deal with.
+
+The following is an approach similar to Apple; that is, Apple provides full `View` flexibility, while documenting the expected usage, and coming up with convenience overloads for pre-defined options.
+
+Before starting, I took inspiration from one of the native SwiftUI components; namely, the `Alert` view. I wanted to build something similar, so I started reverse-engineering it. The initializer of the `Alert` struct that I took inspiration from is the following:
+
+```swift
+Alert(
+  title: Text("My inspiration component"),
+  primaryButton: .destructive(Text("Delete"), action: {}),
+  secondaryButton: .cancel()
+)
+```
+
+Actually, many of SwiftUI's native components are built using a similar pattern.
+
+Whenever you write `.<option>`, just know that you are most likely tapping into either a static method, or computed property.
 
 
 
