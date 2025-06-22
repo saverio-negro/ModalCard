@@ -383,7 +383,72 @@ Therefore, our `Alert.Button` struct is such that it controls which `Button` typ
 
 As a side node, a `static` method or property, is such that it belongs to the `struct` or `class` object itself, and not to any of their instances. However, since a `static` property belongs to the type object itself, any instances of that type (e.g., `Alert`) can tap into that `static` property, which also means that's being shared among all instances of that type.
 
-With that out of the way, let's look at how we would go about implementing a similar predictive and encapsulating approach to Apple's:
+With that out of the way, let's look at how we would go about implementing a **predictive**, **safe**, and **encapsulating** approach similar to Apple-style APIs. However, I'll also show you why, for our implementation, we won't need to make use of generics; instead, we will expose a **high-level**, **semantic** **API** that reads nicer — much like the `Alert.Button.destructive(...)` semantic — using a common design pattern used by Apple: the **Static Factory Method** Design Pattern, strategized and supported with our dear `enum` friend.
+
+First off, let me show you why you wouldn't want to use **generics** when implementing a supporting struct that applies the Factory Method design pattern. 
+
+However, before we do this, let's actually create this supporting struct to our `ModalCard` view, much similar to how Apple builds it within the native `Alert` struct — `Alert.Button`.
+
+```swift
+public struct ModalCard: View {
+
+  // MARK: - ModalCard.Button struct (Factory struct)
+  public struct Button {
+    
+  }
+
+  // MARK: - Properties
+
+  let title: String
+  let message: String
+  let primaryAction: Button<Text>
+  let secondaryAction: Button<Text>
+
+  // MARK: - Init
+  
+  public init(
+    title: String,
+    message: String,
+    primaryAction: @escaping () -> Void,
+    secondaryAction: @escaping () -> Void
+  ) {
+    self.title = title
+    self.message = message
+    self.primaryAction = Button("Delete", action: primaryAction)
+    self.secondaryAction = Button("Cancel", action: secondaryAction)
+  }
+
+  // MARK: - Body
+
+  public var body: some View {
+      VStack(spacing: 15) {
+          Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
+
+          Text(message)
+            .font(.subheadline)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+          
+          HStack(spacing: 15) {
+              secondaryAction
+              primaryAction
+          }
+          .padding()
+    }
+    .padding()
+    .background(
+      RoundedRectangle(cornerRadius: 20, style: .continuous)
+        .fill(Color.white)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    )
+    .padding()
+  }
+}
+```
+
+Because, the `Button` struct is meant to support the `ModalCard` struct, and relates to it, I'm going to define it within the `ModalCard` struct. Yes, that's a common pattern for when you have a type that associates and belongs to another one. In this example case, `Button` is going to be part of the `ModalCard` struct and is going to be a completely different `struct` from our native `SwiftUI.Button`.
 
 
 
