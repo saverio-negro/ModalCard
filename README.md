@@ -395,12 +395,36 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
   // MARK: - ModalCard.Button (Factory struct)
 
   public struct Button {
-
-    enum ButtonType {
-      case destructive(label: Text, action: () -> Void)
-      case cancel(action: () -> Void)
+        
+        enum ButtonType {
+            case destructive(label: Text, action: () -> Void)
+            case cancel(action: () -> Void)
+        }
+        
+        public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
+            return Button(type: .destructive(label: label, action: action))
+        }
+        
+        public static func cancel(_ action: @escaping () -> Void) -> ModalCard.Button {
+            return Button(type: .cancel(action: action))
+        }
+        
+        @ViewBuilder
+        fileprivate func render() -> some View {
+            switch self.type {
+            case .destructive(let label, let action):
+                SwiftUI.Button(action: action, label: { label })
+            case .cancel(let action):
+                SwiftUI.Button(action: action, label: { Text("Cancel") })
+            }
+        }
+        
+        private var type: ButtonType
+        
+        private init(type: ButtonType) {
+            self.type = type
+        }
     }
-  }
 
   // MARK: - Properties
 
@@ -414,13 +438,13 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
   public init(
     title: String,
     message: String,
-    primaryButton: Primary,
-    secondaryButton: Secondary
+    primaryButton: ModalCard.Button,
+    secondaryButton: ModalCard.Button
   ) {
     self.title = title
     self.message = message
-    self.primaryButton = primaryButton
-    self.secondaryButton = secondaryButton
+    self.primaryButton = primaryButton.render() as! Primary
+    self.secondaryButton = secondaryButton.render() as! Secondary
   }
 
   // MARK: - Body
@@ -474,6 +498,7 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
 
 ```swift
 // Within the `ModalCard.Button` struct
+
 enum ButtonType {
   case destructive(label: Text, action: () -> Void)
   case cancel(action: () -> Void)
@@ -483,12 +508,50 @@ enum ButtonType {
 3. Why define a helper `ButtonType` `enum`? Well, an `enum` is a supporting strategy to our Factory Method Design Pattern. It serves as a bridging between the `ModalCard` and `ModalCard.Button` to communicate which `SwiftUI.Button` to render within the `body` property at due time. This pattern is also used by SwiftUI to allow communication between factory structs (e.g., `Font`), and the appropriate modifier (e.g., `.font()` modifier) of type `ViewModifier`, as the SwiftUI likely uses an `enum` or `descriptor` to talk to the `ViewModifier` for it to know which `TextStyle` to apply, for example, which will eventually be written to the environment of the `View` object the `.font()` modifier gets called on. We are using the same pattern here, and we will eventually have the `ModalCard.Button` factory struct return a `ModalCard.Button` instance holding the configuration info as to what type of button to render. Also, notice that I have defined two cases for the `ButtonType` enum: `destructive`, and `cancel`. Both of them have associated values because we need to store information being passed by the users of the API; namely, either the `action` to perform, as well as the `label` for our buttons.
 
 ```swift
+// Within the `ModalCard.Button` struct
 
+// Inner Workings of `ModalCard.Button`, which are abstracted away from the user
+private type: ButtonType
+
+private init(type: ButtonType) {
+  self.type = type
+}
 ```
 
 4. Then, I go about designing the internals of the `ModalCard.Button` struct. They are encapsulated by making use of the `private` access modifier. I go about defining how each `Button` instance is created, as well as its instance members — `type` property. The `ModalCard.Button` instance will be assigned a value to its `type` property upon its instantiation, depending on which `static` method the user calls. This is how we know which `SwiftUI.Button` to render.
 
-6. 
+```swift
+// Within the `ModalCard.Button` struct
+
+// User option for `destructive` role (semantic API user interface)
+public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
+  return Button(type: .destructive(label: label, action: action))
+}
+
+// User option for `cancel` role (semantic API user interface)
+public static func cancel(_ action: @escaping () -> Void) -> ModalCard.Button {
+  return Button(type: .cancel(action: action))
+}
+```
+
+5. Finally, our precious `static` factory methods. Obviously, we define them with a `public` access modifier, as they need to be used by our users from outside the `ModalCard` module. Each factory method produces an instance of `ModalCard.Button` and passes over the relative value to its `type` property of type `ButtonType`. Also, we get to define the proper associated values for our `enum`, depending on the case. Those associated values are important because they allow us to gather information from the user, which will then be passed to the constructor of the `SwiftUI.Button`. Let me show you how I built the instance method to render the appropriate `SwiftUI.Button` object.
+
+```swift
+// Within the `ModalCard.Button` struct
+
+@ViewBuilder
+fileprivate func render() -> some View {
+  switch self.type {
+    case destructive(let label, let action):
+      SwiftUI.Button(action: action, label: { label })
+    case cancel(let action):
+      SwiftUI.Button(action: action, label: { Text("Cancel") })
+  }
+}
+```
+6. In order to render our `SwiftUI.Button` view, I created an instance method called `render`. Notice how I gave it a `fileprivate` access modifier. Can you guess why? Well, this method needs to be called from within the `body` property of the `ModalCard` struct, so we made it private to the _file_, and not to the `ModalCard.Button` _struct_ itself. The `some View` opaque return type is **key** to scalability of our `ModalCard` component, on top of being the main reason why I avoided using generics, as I have previously mentioned. I'll explain to you in a second. For now, let me explain to you why it makes our code scalable.
+
+
 
 
 
