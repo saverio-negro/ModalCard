@@ -17,7 +17,7 @@ Also, this is pretty _similar_ to the approach that Apple uses.
 
 **Note**: Take into account the fact that we can't see the actual implementation used by Apple since SwiftUI is a **closed-source** framework. However, I'm using reverse engineering by inspecting objects at runtime using Xcode's LLDB, inferring the behavior by checking out Apple's documentation, as well as referencing Apple's public APIs. What I think is important is that, after having gone through this README, you may appreciate the design-thinking approach, even to building a simple API as a `ModalCard`, which is meant to lay the foundation for more complex SwiftUI architecture patterns.
 
-### First Implementation Layer of `ModalCard` and Why this Approach is Scalable and Flexible
+### First Implementation Layer of `ModalCard`
 
 Before getting straight to the final implementation of `ModalCard`, I would like to start presenting you the first layer of my implementation, which starts being very general and generic. As I go about explaining it, I'll outline the pros and cons, and what would a solution be in terms of code design to face those cons.
 
@@ -160,4 +160,70 @@ Now, I assume that, if you have come here to know a bit more about the SwiftUI a
 We are trying to build a card-like UI, where we define `Text` views displaying the values for our `title` and `message` properties. We then define a `RoundedRectangle` shape as a background to our `VStack` view.
 
 What's interesting is the content in our `HStack`. We are returning the `View` objects defined by the user and stored on the `primaryAction` and `secondaryAction` properties. We are assuming that `primaryAction` stores a button with a _destructive_ role (right-hand side), while `secondaryAction` stores one with a _cancel_ role (left-hand side).
+
+### Pros and Cons of the Above Implementation
+
+Now that we have gone over the first implementation layer for our `ModalCard` component, if you are a detail-oriented person, you might have noticed some cons to this implementation, especially after telling you that I meant for this card view to display buttons for actions to perform.
+
+Then, in an ideal world, an upright user that would read the documentation attached to my SwiftUI component would know what to do and use the `ModalCard` view API much like the following:
+
+```swift
+ModalCard(
+    title: "Delete Account",
+    message: "This action cannot be undone.",
+    primaryAction: {
+        Button("Delete") {
+            print("Delete")
+        }
+    },
+    secondaryAction: {
+        Button("Cancel") {
+            print("Cancel")
+        }
+    }
+)
+```
+
+This is how the `ModalCard` should be used, and `primaryAction` and `secondaryAction` should be assigned functions returning `Button` objects.
+
+However, there are some cons to this, and if you are reasoning through things like a framework designer, you might notice that we are actually allowing the user to pass over to the `ModalCard` constructor whichever `View` objects they want. That means that someone could pass in a `Text`, an `Image`, or even a `ProgressView`, and our component wouldn't complain!
+
+For instance, this is weird, yet legal:
+
+```swift
+ModalCard(
+    title: "Oops",
+    message: "This modal has weird content.",
+    primaryAction: {
+        Image(systemName: "xmark.circle")
+    },
+    secondaryAction: {
+        Text("Not really a button")
+    }
+)
+```
+
+If our intention was just to allow buttons, then the code above is nonsensical, isn't it?
+
+Then why use it?
+
+Let me walk you through this, and that's where things get hotter and more interesting.
+
+There's actually a clear trade-off here, which is a very common one for framework engineers:
+
+1. Using `View` (generic):
+   - **Pros**: Very flexible and allows the component to be extremely adaptive.
+   - **Cons**: No constraints defined, which may lead to misuse and nonsensical behaviors.
+
+2. Using a restricted type (e.g., `Button`):
+   - **Pros**: Forces intended usage.
+   - **Cons**: Reduces flexibility (e.g., custom-styled buttons, or conditional logic).
+
+So, I'll tell you right off the bat that Apple leans towards the first approach, which is using generics, but with a more clever implementation that allows for encapsulation, flexibility, and scalability.
+
+However, before showing you how I would add a second layer to our current version of `ModalCard` to come up with a more Apple-like version, I want to first point out to you why using a restricted type (2. approach) is very limiting, which I suggest you not go for it.
+
+
+
+
 
