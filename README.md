@@ -15,7 +15,7 @@ While it's true that you can create your modal component depending on your purpo
 With that out of the way, let's see how I implemented it, and why I came up with that specific solution. I'll walk you through the design-thinking process, and why this solution is _encapsulating_ and _scalable_.
 Also, this is pretty _similar_ to the approach that Apple uses.
 
-**Note**: Take into account the fact that we can't see the actual implementation used by Apple since SwiftUI is a **closed-source** framework. However, I'm using reverse engineering by inspecting objects at runtime using Xcode's LLDB, inferring the behavior by checking out Apple's documentation, as well as referencing Apple's public APIs. What I think is important is that after having gone through this README, you may appreciate the design-thinking approach, even to building a simple API as a `ModalCard`, which is meant to lay the foundation for more complex SwiftUI architecture patterns.
+**Note**: Take into account the fact that we can't see the actual implementation used by Apple since SwiftUI is a **closed-source** framework. However, I'm using reverse engineering by inspecting objects at runtime using Xcode's LLDB, inferring the behavior by checking out Apple's documentation, as well as referencing Apple's public APIs. What I think is important is that, after having gone through this README, you may appreciate the design-thinking approach, even to building a simple API as a `ModalCard`, which is meant to lay the foundation for more complex SwiftUI architecture patterns.
 
 ### First Implementation Layer of `ModalCard` and Why this Approach is Scalable and Flexible
 
@@ -76,4 +76,14 @@ public struct ModalCard<Primary: View, Secondary: View>: View {
   }
 }
 ```
+
+That's a mouthful, isn't it? Well, let's go through it:
+
+```swift
+public struct ModalCard<Primary: View, Secondary: View>: View {
+```
+
+1. The code snippet above uses the `public` access modifier so that users using our component from _outside_ the `ModalCard` module can tap into it. This is crucial to any reusable API you are building.
+
+2. We use **parametric polymorphism** — simply known as **generics** — with our `ModalCard`, and all it does is define two _type parameters_ — `Primary` and `Secondary` — that we want this struct to work with. Essentially, these type parameters could be of any type, as long as they conform to the `View` protocol; in other words, they should be views. This is a powerful tool of Swift and many other programming languages out there (e.g., template classes in C++), which allows the code of our struct to work with any type, and those `Primary` and `Secondary` are two placeholders with the `View` type constraint applied to them `<Primary: View, Secondary: View>`. 
 
