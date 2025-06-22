@@ -123,5 +123,41 @@ We are essentially defining four parameters for the `ModalCard` constructor/init
 
 **Note**: I explain the `@ViewBuilder` property wrapper in the last component; namely, the <a href="https://github.com/saverio-negro/Card">Card View Component</a>. Make sure to check it out!
 
-In the code block relative to the constructor, we assign the `primaryAction` and `secondaryAction` properties the views that the user-defined functions — being passed to the `ModalCard` object — return; in fact, notice that we are calling them — `primaryAction()` and `secondaryAction()` — since the initializer is passed a reference of those functions in memory, and to run their associated code blocks, we need to invoke them, which entails appending a set of parentheses.
+In the code block relative to the constructor, we assign to `primaryAction` and `secondaryAction` properties the views being returned by the user-defined functions — which are passed to `ModalCard` upon its instantiation; in fact, notice that we are calling them — `primaryAction()` and `secondaryAction()` — since the initializer is passed a reference of those functions in memory, and to run their associated code blocks, we need to invoke them, which entails appending a set of parentheses; only then will we make sure that the properties are assigned the actual `View` objects, and not the functions themselves.
+
+Finally, we have the following code:
+
+```swift
+public var body: some View {
+      VStack(spacing: 15) {
+          Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
+
+          Text(message)
+            .font(.subheadline)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+          
+          HStack(spacing: 15) {
+              secondaryAction
+              primaryAction
+          }
+          .padding()
+    }
+    .padding()
+    .background(
+      RoundedRectangle(cornerRadius: 20, style: .continuous)
+        .fill(Color.white)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    )
+    .padding()
+  }
+```
+
+Now, I assume that, if you have come here to know a bit more about the SwiftUI architecture and how to build your own SwiftUI APIs, you must have some groundwork of basic SwiftUI. That means I won't go with an in-depth explanation for each modifier; instead, I want to describe at a higher level what's happening in the code snippet above.
+
+We are trying to build a card-like UI, where we define `Text` views displaying the values for our `title` and `message` properties. We then define a `RoundedRectangle` shape as a background to our `VStack` view.
+
+What's interesting is the content in our `HStack`. We are actually returning the `View` objects defined by the user and stored on the `primaryAction` and `secondaryAction` properties.
 
