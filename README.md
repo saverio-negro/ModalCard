@@ -1,5 +1,7 @@
 # 03 - Slot-Based and Adaptive Layouts with `ModalCard` view
 
+<img src="./Card.png" width="25%" height="25%"/>
+
 ## Introduction
 
 The `ModalCard` view component is meant to be a _reusable_ and _configurable_ modal by having it accept configurable parameters, both variables (state) and functions (behaviors); hence, an _adaptive_ layout that can be reused across apps.
