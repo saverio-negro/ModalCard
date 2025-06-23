@@ -555,9 +555,11 @@ fileprivate func render() -> some View {
 
 ### Why Avoid Using Generics
 
-At this point, If you tried building your `ModalCard` object using the following code:
+At this point, If you tried building your `ModalCard` object using the version that uses **generics**, which I lastly shared with you,
 
 ```swift
+import ModalCard
+
 ModalCard(
     title: "Delete Account",
     message: "This action cannot be undone.",
@@ -566,12 +568,18 @@ ModalCard(
         { print("Delete") }
     ),
     secondaryButton: .cancel(
-        {
-            print("Cancel")
-        }
+        { print("Cancel") }
     )
 )
 ```
+it won't actually work, and that's due to how we structured our Factory struct (`ModalCard.Button`); specifically, our `render()` method.
+
+We are currently using our `render()` method inside the initializer of our `ModalCard` to assign _whichever_ object of type `View` is being returned from it to both `primaryButton`, and `secondaryButton`.
+Then, I force-cast that returned type to the `Primary` and `Secondary` generic types, because those are the types we declared our properties to be.
+
+You might ask to yourself, "Well, we know that what's returned by the `render()` method is some object of type `View`, and we also know that either the `Primary` or `Secondary` generic type are some types conforming to the `View` protocol, so what's the problem with force-casting?"
+
+
 
 
 
