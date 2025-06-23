@@ -577,7 +577,26 @@ it won't actually work, and that's due to how we structured our Factory struct (
 We are currently using our `render()` method inside the initializer of our `ModalCard` to assign _whichever_ object of type `View` is being returned from it to both `primaryButton`, and `secondaryButton`.
 Then, I force-cast that returned type to the `Primary` and `Secondary` generic types, because those are the types we declared our properties to be.
 
+```swift
+// Within the `ModalCard` struct
+public init(
+  title: String,
+  message: String,
+  primaryButton: ModalCard.Button,
+  secondaryButton: ModalCard.Button
+) {
+  self.title = title
+  self.message = message
+
+  // Force casting an opaque type to a generic type
+  self.primaryButton = primaryButton.render() as! Primary
+  self.secondaryButton = secondaryButton.render() as! Secondary
+}
+```
+
 You might ask to yourself, "Well, we know that what's returned by the `render()` method is some object of type `View`, and we also know that either the `Primary` or `Secondary` generic type are some types conforming to the `View` protocol, so what's the problem with force-casting?"
+
+Well, I know that it might sound plausible, but it actually isn't, and I'll explain to you why: 
 
 
 
