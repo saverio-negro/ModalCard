@@ -608,7 +608,21 @@ For instance, `Primary` might hold a type of `Text` — still conforming to `Vie
 
 #### Solution to Force-Cast
 
-I
+If you think about it, we have already laid the foundation to a flexible, scalable and safe code using our `ModalCard.Button` supporting struct and applying the _Factory Method_ design pattern.
+
+In fact, the main reason why we came with such a solution was to have our factory struct `ModalCard.Button` _produce_ buttons, and `ModalCard` _accept_ those views. We don't need generics at all — in our case, we don't need `Primary: View` and `Secondary: View` — because the flexibility attribute that generics could have offered us is being resolved by the following steps:
+
+- Having `ModalCard` store the `ModalCard.Button` object directly under `primaryButton` and `secondaryButton`.
+  
+- Delegating the rendering to `render() -> some View`, which offers us the flexibility we need via the _return opaque type_ — the method returns any object conforming to `View` — while providing safety and encapsulation by deciding which options (static methods) to expose to the end user — our developers — when designing the `ModalCard.Button` factory struct. In such a situation, we are no longer casting it to a specific type, but directly embedding it within the `body` property of our `ModalCard` view.
+
+Finally, the pattern we are going to use mimics Apple's `Alert.Button` style almost exactly.
+
+### Final Implementation of `ModalCard`
+
+
+
+
 
 
 
