@@ -620,6 +620,21 @@ Finally, the pattern we are going to use mimics Apple's `Alert.Button` style alm
 
 ### Final Implementation of `ModalCard`
 
+We understood that generics aren't always needed, and despite them being useful, we should use them whenever the end-user of our API _injects_ their logic, but that also comes with its risks.
+
+However, in scenarios where we are to own the logic, for example, with a supporting factory struct, we don't need generics.
+
+Therefore, let's finally have a look at the final implementation of our `ModalCard` component, where we make the most out of our factory design pattern and allow smooth communication between the outer and inner structs:
+
+```swift
+public struct ModalCard: View {
+
+  // MARK: - Properties
+
+  
+}
+```
+
 
 
 
