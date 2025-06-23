@@ -596,7 +596,15 @@ public init(
 
 You might ask to yourself, "Well, we know that what's returned by the `render()` method is some object of type `View`, and we also know that either the `Primary` or `Secondary` generic type are some types conforming to the `View` protocol, so what's the problem with force-casting?"
 
-Well, I know that it might sound plausible, but it actually isn't, and I'll explain to you why: 
+Well, I know that it might sound plausible, but it actually isn't, and I'll explain to you why.
+
+#### The Problem with `as! Primary`
+
+We know that the `some` keyword defines an **opaque return type**. The opaque return type hides the actual underlying type — actual type being returned — and it lets Swift infer the type at runtime. In our specific case, we are hiding the actual returned type behind the `View` protocol. 
+
+Therefore, even though the Swift compiler knows that the underlying type conforms to `View`, Swift can't know whether this real `View` underlying type being returned by `render()` actually matches with the `Primary` type. Yes, `Primary` also conforms to `View`, but that doesn't mean that the view being returned by `render` is going to be exactly of the same type specified by `Primary`. 
+
+For instance, `Primary` might hold a type of `Text` — still conforming to `View` — while the actual underlying `View` being returned by the `render()` method might be of type `Button`, which still conforms to `View`, but at the end of the day they are _not_ matching types. That's why Swift rightfully complains about this and prevents it from happing at runtime. It's like telling Swift to trust us that whatever `some View` returns is definitely the same as a completely unrelated generic type `Primary`. Well, if you think about it, it makes sense because Swift can't know it since it's implicit within the definition of generics; in other words, it can hold _any_ type conforming to `View`.
 
 
 
