@@ -551,7 +551,29 @@ fileprivate func render() -> some View {
   }
 }
 ```
-6. In order to render our `SwiftUI.Button` view, I created an instance method called `render`. Notice how I gave it a `fileprivate` access modifier. Can you guess why? Well, this method needs to be called from within the `body` property of the `ModalCard` struct, so we made it private to the _file_, and not to the `ModalCard.Button` _struct_ itself. The `some View` opaque return type is **key** to scalability of our `ModalCard` component, on top of being the main reason why I avoided using generics, as I have previously mentioned. I'll explain to you in a second. For now, let me explain to you why it makes our code scalable.
+6. In order to render our `SwiftUI.Button` view, I created an instance method called `render`. Notice how I gave it a `fileprivate` access modifier. Can you guess why? Well, this method needs to be called from within the `body` property of the `ModalCard` struct, so we made it private to the _file_, and not to the `ModalCard.Button` _struct_ itself. The `some View` opaque return type is **key** to scalability of our `ModalCard` component, on top of being the main reason why I avoided using generics, as I have previously mentioned. I'll explain to you in a second.
+
+### Why Avoid Using Generics
+
+At this point, If you tried building your `ModalCard` object using the following code:
+
+```swift
+ModalCard(
+    title: "Delete Account",
+    message: "This action cannot be undone.",
+    primaryButton: .destructive(
+        Text("Delete"),
+        { print("Delete") }
+    ),
+    secondaryButton: .cancel(
+        {
+            print("Cancel")
+        }
+    )
+)
+```
+
+
 
 
 
