@@ -604,7 +604,11 @@ We know that the `some` keyword defines an **opaque return type**. The opaque re
 
 Therefore, even though the Swift compiler knows that the underlying type conforms to `View`, Swift can't know whether this real `View` underlying type being returned by `render()` actually matches with the `Primary` type. Yes, `Primary` also conforms to `View`, but that doesn't mean that the view being returned by `render` is going to be exactly of the same type specified by `Primary`. 
 
-For instance, `Primary` might hold a type of `Text` — still conforming to `View` — while the actual underlying `View` being returned by the `render()` method might be of type `Button`, which still conforms to `View`, but at the end of the day they are _not_ matching types. That's why Swift rightfully complains about this and prevents it from happing at runtime. It's like telling Swift to trust us that whatever `some View` returns is definitely the same as a completely unrelated generic type `Primary`. Well, if you think about it, it makes sense because Swift can't know it since it's implicit within the definition of generics; in other words, it can hold _any_ type conforming to `View`.
+For instance, `Primary` might hold a type of `Text` — still conforming to `View` — while the actual underlying `View` being returned by the `render()` method is of type `Button`, which still conforms to `View`, but at the end of the day they are _not_ matching types. That's why Swift rightfully complains about this and prevents it from happing at runtime. It's like telling Swift to trust us that whatever `some View` returns is definitely the same as a completely unrelated generic type `Primary`. Well, if you think about it, it makes sense because Swift can't know it since it's implicit within the definition of generics: either `Primary` or `Secondary` can hold _any_ type conforming to `View`.
+
+#### Solution to Force-Cast
+
+I
 
 
 
