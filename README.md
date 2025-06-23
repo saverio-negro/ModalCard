@@ -572,7 +572,7 @@ ModalCard(
     )
 )
 ```
-it won't actually work, and that's due to how we structured our Factory struct (`ModalCard.Button`); specifically, our `render()` method.
+it won't work, and that's due to how we structured our Factory struct (`ModalCard.Button`); specifically, our `render()` method.
 
 We are currently using our `render()` method inside the initializer of our `ModalCard` to assign _whichever_ object of type `View` is being returned from it to both `primaryButton`, and `secondaryButton`.
 Then, I force-cast that returned type to the `Primary` and `Secondary` generic types, because those are the types we declared our properties to be.
@@ -604,17 +604,17 @@ We know that the `some` keyword defines an **opaque return type**. The opaque re
 
 Therefore, even though the Swift compiler knows that the underlying type conforms to `View`, Swift can't know whether this real `View` underlying type being returned by `render()` actually matches with the `Primary` type. Yes, `Primary` also conforms to `View`, but that doesn't mean that the view being returned by `render` is going to be exactly of the same type specified by `Primary`. 
 
-For instance, `Primary` might hold a type of `Text` — still conforming to `View` — while the actual underlying `View` being returned by the `render()` method is of type `Button`, which still conforms to `View`, but at the end of the day they are _not_ matching types. That's why Swift rightfully complains about this and prevents it from happing at runtime. It's like telling Swift to trust us that whatever `some View` returns is definitely the same as a completely unrelated generic type `Primary`. Well, if you think about it, it makes sense because Swift can't know it since it's implicit within the definition of generics: either `Primary` or `Secondary` can hold _any_ type conforming to `View`.
+For instance, `Primary` might hold a type of `Text` — still conforming to `View` — while the actual underlying `View` being returned by the `render()` method is of type `Button`, which still conforms to `View`, but at the end of the day they are _not_ matching types. That's why Swift rightfully complains about this and prevents it from happening at runtime. It's like telling Swift to trust us that whatever `some View` returns is definitely the same as a completely unrelated generic type `Primary`. Well, if you think about it, Swift cannot know it since it's implicit within the definition of generics: either `Primary` or `Secondary` can hold _any_ type conforming to `View`.
 
 #### Solution to Force-Cast
 
-If you think about it, we have already laid the foundation to a flexible, scalable and safe code using our `ModalCard.Button` supporting struct and applying the _Factory Method_ design pattern.
+If you think about it, we have already laid the foundation for a flexible, scalable, and safe code using our `ModalCard.Button` supporting struct and applying the _Factory Method_ design pattern.
 
-In fact, the main reason why we came with such a solution was to have our factory struct `ModalCard.Button` _produce_ buttons, and `ModalCard` _accept_ those views. We don't need generics at all — in our case, we don't need `Primary: View` and `Secondary: View` — because the flexibility attribute that generics could have offered us is being resolved by the following steps:
+In fact, the main reason why we came up with such a solution was to have our factory struct `ModalCard.Button` _produce_ buttons, and `ModalCard` _accept_ those views. We don't need generics at all — in our case, we don't need `Primary: View` and `Secondary: View` — because the flexibility attribute that generics could have offered us is being resolved by the following steps:
 
 - Having `ModalCard` store the `ModalCard.Button` object directly under `primaryButton` and `secondaryButton`.
   
-- Delegating the rendering to `render() -> some View`, which offers us the flexibility we need via the _return opaque type_ — the method returns any object conforming to `View` — while providing safety and encapsulation by deciding which options (static methods) to expose to the end user — our developers — when designing the `ModalCard.Button` factory struct. In such a situation, we are no longer casting it to a specific type, but directly embedding it within the `body` property of our `ModalCard` view.
+- Delegating the rendering to `render() -> some View`, which offers us the flexibility we need via the _return opaque type_ — the method returns any object conforming to `View` — while providing safety and encapsulation by deciding which options (static methods) to expose to the end user — our developers — when designing the `ModalCard.Button` factory struct. In such a situation, our `ModalCard.Button` object holds the necessary information regarding which `Button` view to render; therefore, we are no longer force-casting the underlying `View` type, but directly embedding it within the `body` property of our `ModalCard` view.
 
 Finally, the pattern we are going to use mimics Apple's `Alert.Button` style almost exactly.
 
