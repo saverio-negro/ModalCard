@@ -795,6 +795,18 @@ As you may have noticed, many of Apple's APIs, such as `Alert` (e.g., `Alert.But
 
 #### Strategy-like Design Pattern
 
+As a premise, I'm claiming that the codebase of our `ModalCard` uses a design pattern _similar_ to the **Strategy** Design Pattern, because it applies the same concepts. However, it doesn't resemble the exact implementation, and I'll explain to you why in a second.
+
+First off, a **Strategy** Design Pattern lets you define a series of algorithms (actions) to embed in separate classes or structs, each of these classes or structs is meant to implement a certain interface or protocol (in Swift) called the **Strategy** protocol. This protocol will define a requirement, which is the implementation of a concrete strategy or action for each class or struct.
+
+For instance, in our `ModalCard` example, the Strategy protocol would be the `ButtonType`, and the structs adopting that protocol would be `Destructive` and `Cancel`. Either `Destructive` or `Cancel` struct is a **Concrete Strategy**, because we provide a _concrete_ implementation for the strategy or action — rendering a certain `SwiftUI.Button` object.
+
+These concrete strategy objects are then going to be interchangeable on the `ModalCard.Button` struct. This struct is called the context struct, which stores the actual strategy object — any object adopting the `ButtonType` protocol — and also defines an interface to have the strategy object manipulate its data and perform specific strategy actions with it – rendering a certain `SwiftUI.Button` object. In other words, the `ModalCard.Button` context struct would use a property of type `ButtonType` to invoke a specific algorithm/action defined by the concrete strategy (e.g., object of type `Destructive` adopting the `ButtonType` strategy) we store on that property. This a truly flexible tool, because we can change the behavior of our `ModalCard` at runtime, just by using an interface that replaces a new concrete strategy object with a new one, which performs a different action.
+
+I'll show you an example of `ModalCard.Button` using the pure Strategy Design Pattern just for demonstration purposes and explain to you how it relates to the final implementation of `ModalCard` and why I decided not to go fully into the Strategy Design Pattern.
+
+
+
 
 
 
