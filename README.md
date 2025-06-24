@@ -759,9 +759,9 @@ HStack(spacing: 15) {
 
 #### Usage Example
 
-So, what you are left with is just trying the `ModalCard` component! You'll find that its setup is very similar to how you would construct a native `Alert` component.
+So, what you are left with is just trying the `ModalCard` component! You'll find that its setup is very similar to how Apple constructed its native `Alert` component.
 
-The following is an example showing you how you would want to instantiate the `ModalCard` struct:
+The following is an example showing you how you would want to instantiate and use the `ModalCard` struct:
 
 ```swift
 ModalCard(
@@ -777,7 +777,22 @@ ModalCard(
 )
 ```
 
-### Wrap up
+### Briefly on Design Choice
+
+The `ModalCard` component is an interesting example of combining multiple design patterns to achieve clarity, reusability, and expressiveness.
+
+The primary design pattern is the _Factory Method_ design pattern. This pattern exposes a method to the user of our class or struct to create well-defined instances of a certain type. In our case, we exposed `static` methods (e.g., `.destructive`, or `.cancel`) to produce `ModalCard.Button` instances; for this reason, we can specifically refer to it as _Static Factory Method_.
+
+```swift
+public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
+```
+
+Methods such as the one in the code snippet above encapsulate the internal implementation details (e.g., enums, properties, and constructor) and expose the necessary features offering a semantic API surface to the end-user.
+
+As you may have noticed, many of Apple's APIs, such as `Alert` (e.g., `Alert.Button.destructive`) are also implemented using the Static Factory Method design pattern, because it _encapsulates_ construction logic, and provides _semantic access_.
+
+
+
 
 
 
