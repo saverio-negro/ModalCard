@@ -634,6 +634,7 @@ public struct ModalCard: View {
   public struct Button {
 
     // Exposed factory methods
+
     static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
       return Button(type: .destructive(label: label, action: action))
     }
@@ -653,6 +654,8 @@ public struct ModalCard: View {
       }
     }
 
+    // Encapsulated behaviors
+    
     private enum ButtonType {
       case destructive(let label: Text, let action: () -> Void)
       case cancel(action: () -> Void)
