@@ -635,11 +635,11 @@ public struct ModalCard: View {
 
     // Exposed factory methods
 
-    static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
+    public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
       return Button(type: .destructive(label: label, action: action))
     }
 
-    static func cancel(_ action: @escaping () -> Void) -> ModalCard.Button {
+    public static func cancel(_ action: @escaping () -> Void) -> ModalCard.Button {
       return Button(type: .cancel(action: action))
     }
 
@@ -649,7 +649,7 @@ public struct ModalCard: View {
       switch self.type {
       case .destructive(let label, let action):
         SwiftUI.Button(action: action, label: { label })
-      case .cancel(let action): 
+      case .cancel(let action):
         SwiftUI.Button(action: action, label: { Text("Cancel") })
       }
     }
@@ -657,7 +657,7 @@ public struct ModalCard: View {
     // Encapsulated behaviors
     
     private enum ButtonType {
-      case destructive(let label: Text, let action: () -> Void)
+      case destructive(label: Text, action: () -> Void)
       case cancel(action: () -> Void)
     }
 
@@ -665,7 +665,7 @@ public struct ModalCard: View {
 
     private init(type: ButtonType) {
       self.type = type
-    }    
+    }
   }
 
   // MARK: - Properties
@@ -680,7 +680,7 @@ public struct ModalCard: View {
   public init(
     title: String,
     message: String,
-    primaryButton: ModalCard.Button
+    primaryButton: ModalCard.Button,
     secondaryButton: ModalCard.Button
   ) {
     self.title = title
@@ -716,7 +716,6 @@ public struct ModalCard: View {
     )
     .padding()
   }
-  
 }
 ```
 
