@@ -781,7 +781,9 @@ ModalCard(
 
 The `ModalCard` component is an interesting example of combining multiple design patterns to achieve clarity, reusability, and expressiveness.
 
-The primary design pattern is the _Factory Method_ design pattern. This pattern exposes a method to the user of our class or struct to create well-defined instances of a certain type. In our case, we exposed `static` methods (e.g., `.destructive`, or `.cancel`) to produce `ModalCard.Button` instances; for this reason, we can specifically refer to it as _Static Factory Method_.
+#### Factory Design Pattern
+
+The primary design pattern is the _Factory_ design pattern. This pattern is a creational design pattern, which exposes a method to the user of our class or struct to create well-defined instances of a certain type. In our case, we exposed `static` methods (e.g., `.destructive`, or `.cancel`) to produce `ModalCard.Button` instances; for this reason, we can specifically refer to it as _Static Factory Method_.
 
 ```swift
 public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
@@ -790,6 +792,10 @@ public static func destructive(_ label: Text, _ action: @escaping () -> Void) ->
 Methods such as the one in the code snippet above encapsulate the internal implementation details (e.g., enums, properties, and constructor) and expose the necessary features offering a semantic API surface to the end-user.
 
 As you may have noticed, many of Apple's APIs, such as `Alert` (e.g., `Alert.Button.destructive`) are also implemented using the Static Factory Method design pattern, because it _encapsulates_ construction logic, and provides _semantic access_.
+
+#### Strategy-like Design Pattern
+
+
 
 
 
