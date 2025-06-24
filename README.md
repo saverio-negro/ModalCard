@@ -801,9 +801,12 @@ First off, a **Strategy** Design Pattern lets you define a series of algorithms 
 
 For instance, in our `ModalCard` example, the Strategy protocol would be the `ButtonType`, and the structs adopting that protocol would be `Destructive` and `Cancel`. Either `Destructive` or `Cancel` struct is a **Concrete Strategy**, because we provide a _concrete_ implementation for the strategy or action — rendering a certain `SwiftUI.Button` object.
 
-These concrete strategy objects are then going to be interchangeable on the `ModalCard.Button` struct. This struct is called the context struct, which stores the actual strategy object — any object adopting the `ButtonType` protocol — and also defines an interface to have the strategy object manipulate its data and perform specific strategy actions with it – rendering a certain `SwiftUI.Button` object. In other words, the `ModalCard.Button` context struct would use a property of type `ButtonType` to invoke a specific algorithm/action defined by the concrete strategy (e.g., object of type `Destructive` adopting the `ButtonType` strategy) we store on that property. This a truly flexible tool, because we can change the behavior of our `ModalCard` at runtime, just by using an interface that replaces a new concrete strategy object with a new one, which performs a different action.
+These concrete strategy objects are then going to be interchangeable on the `ModalCard.Button` struct. This struct is called the context struct, which stores the actual strategy object — any object adopting the `ButtonType` protocol — and also defines an interface to have the strategy object manipulate its data and perform specific strategy actions with it – rendering a certain `SwiftUI.Button` object. In other words, the `ModalCard.Button` context struct would use a property of type `ButtonType` to invoke a specific algorithm/action defined by the concrete strategy (e.g., object of type `Destructive` adopting the `ButtonType` strategy) we store on that property. This a truly flexible tool, because we can change the behavior of our `ModalCard` at runtime, just by using an interface that replaces a new concrete strategy object with a new one, which performs a different action. For example, in our `ModalCard` example case, that property would be our `type` property, right?
 
-I'll show you an example of `ModalCard.Button` using the pure Strategy Design Pattern just for demonstration purposes and explain to you how it relates to the final implementation of `ModalCard` and why I decided not to go fully into the Strategy Design Pattern.
+I'll show you an example of `ModalCard.Button` using the pure Strategy Design Pattern just for demonstration purposes and explain to you how it relates to the final implementation of `ModalCard` and why I decided not to go fully into the Strategy Design Pattern:
+
+```swift 
+```
 
 
 
