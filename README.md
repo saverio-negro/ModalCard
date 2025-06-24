@@ -757,6 +757,8 @@ HStack(spacing: 15) {
 
 3. As we mentioned in the previous paragraph, we delegate the rendering to `render() -> some View`, which will just embed whichever type of `View` returned into the `HStack`. This offers us the flexibility we were looking for. However, this flexibility is controlled for predictiveness and safety by setting up our constraints within the factory struct.
 
+#### Usage Example
+
 So, what you are left with is just trying the `ModalCard` component! You'll find that its setup is very similar to how you would construct a native `Alert` component.
 
 The following is an example showing you how you would want to instantiate the `ModalCard` struct:
