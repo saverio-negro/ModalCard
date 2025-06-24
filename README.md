@@ -721,7 +721,63 @@ public struct ModalCard: View {
 
 Let me walk you through the main changes with our final and working implementation, which is the one I provided you with within the `ModalCard.swift` file on this repository:
 
-1. 
+```swift
+public struct ModalCard: View {
+```
+
+1. We are no longer using generics — we no longer define the `Primary: View` and `Secondary: View` type parameters.
+
+```swift
+// Within the `ModalCard` struct
+
+// MARK: - Init
+
+  public init(
+    title: String,
+    message: String,
+    primaryButton: ModalCard.Button,
+    secondaryButton: ModalCard.Button
+  ) {
+    self.title = title
+    self.message = message
+    self.primaryButton = primaryButton
+    self.secondaryButton = secondaryButton
+  }
+```
+
+2. We have `ModalCard` accept the `ModalCard.Button` instances produced by the factory struct (`ModalCard.Button`), and store them under `primaryButton` and `secondaryButton`. These instances are crucial as they hold information as to which `View` to render; specifically, which `SwiftUI.Button` type to render, based on the option that the end-user passed to the exposed interface (e.g., `ButtonType.destructive`).
+
+```swift
+// Within the `body` property of `ModalCard`
+
+HStack(spacing: 15) {
+  secondaryButton.render()
+  primaryButton.render()
+```
+
+3. As we mentioned in the previous paragraph, we delegate the rendering to `render() -> some View`, which will just embed whichever type of `View` returned into the `HStack`. This offers us the flexibility we were looking for. However, this flexibility is controlled for predictiveness and safety by setting up our constraints within the factory struct.
+
+So, what you are left with is just trying the `ModalCard` component! You'll find that its setup is very similar to how you would construct a native `Alert` component.
+
+The following is an example showing you how you would want to instantiate the `ModalCard` struct:
+
+```swift
+ModalCard(
+  title: "Delete Account",
+  message: "This action cannot be undone.",
+  primaryButton: .destructive(
+      Text("Delete"),
+      { print("Delete") }
+  ),
+  secondaryButton: .cancel(
+      { print("Cancel") }
+  )
+)
+```
+
+### Wrap up
+
+
 
 
 
