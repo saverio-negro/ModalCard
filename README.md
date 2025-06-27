@@ -933,6 +933,9 @@ public struct ModalCard: View {
   }
 }
 ```
+Let me walk you through the above implementation for `ModalCard.Button`, which uses the _Strategy Design Pattern_ at its fullest, alongside the _Factory Design Pattern_, which we have already gone through.
+
+1. 
 
 
 
