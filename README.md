@@ -806,7 +806,92 @@ These concrete strategy objects are then going to be interchangeable on the `Mod
 I'll show you an example of `ModalCard.Button` using the pure Strategy Design Pattern just for demonstration purposes and explain to you how it relates to the final implementation of `ModalCard` and why I decided not to go fully into implementing it:
 
 ```swift
+public struct ModalCard: View {
 
+  // MARK: - `ModalCard.Button` factory/context struct
+
+  public struct Button {
+
+    // Define the `ButtonType` strategy protocol
+    private protocol ButtonType {
+      associatedtype ViewType: View
+
+      @ViewBuilder
+      func render() -> ViewType
+    }
+
+   // Define the `Destructive` concrete strategy
+   private struct Destructive: ButtonType {
+  
+    let label: Text
+    let action: () -> Void
+    
+    @ViewBuilder
+    func render() -> some View {
+      return SwiftUI.Button(action: action, label: { label })
+    }
+   }
+
+    // Define the `Cancel` concrete strategy
+    private struct Cancel: ButtonType {
+      let action: () -> Void
+  
+      @ViewBuilder
+      func render() -> some View {
+        return SwiftUI.Button(action: action, label: { Text("Cancel") })
+      }
+    }
+  }
+
+  // MARK: - Properties
+
+  let title: String
+  let message: String
+  let primaryButton: ModalCard.Button
+  let secondaryButton: ModalCard.Button
+
+  // MARK: - Init
+
+  public init(
+    title: String,
+    message: String,
+    primaryButton: ModalCard.Button,
+    secondaryButton: ModalCard.Button
+  ) {
+    self.title = title
+    self.message = message
+    self.primaryButton = primaryButton
+    self.secondaryButton = secondaryButton
+  }
+
+  // MARK: - Body
+
+  public var body: some View {
+      VStack(spacing: 15) {
+          Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
+
+          Text(message)
+            .font(.subheadline)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+          
+          HStack(spacing: 15) {
+              secondaryButton.render()
+              primaryButton.render()
+          }
+          .padding()
+    }
+    .padding()
+    .background(
+      RoundedRectangle(cornerRadius: 20, style: .continuous)
+        .fill(Color.white)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    )
+    .padding()
+  }
+}
 ```
 
 
