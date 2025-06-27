@@ -811,36 +811,76 @@ public struct ModalCard: View {
   // MARK: - `ModalCard.Button` factory/context struct
 
   public struct Button {
-
-    // Define the `ButtonType` strategy protocol
-    private protocol ButtonType {
-      associatedtype ViewType: View
-
-      @ViewBuilder
-      func render() -> ViewType
-    }
-
-   // Define the `Destructive` concrete strategy
-   private struct Destructive: ButtonType {
-  
-    let label: Text
-    let action: () -> Void
-    
-    @ViewBuilder
-    func render() -> some View {
-      return SwiftUI.Button(action: action, label: { label })
-    }
-   }
-
-    // Define the `Cancel` concrete strategy
-    private struct Cancel: ButtonType {
-      let action: () -> Void
-  
-      @ViewBuilder
-      func render() -> some View {
-        return SwiftUI.Button(action: action, label: { Text("Cancel") })
+      
+      // Define static factory methods
+      
+      public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
+          Button(type: AnyButtonType(Destructive(label: label, action: action)))
       }
-    }
+      
+      public static func cancel(_ action: @escaping () -> Void) -> ModalCard.Button {
+          Button(type: AnyButtonType(Cancel(action: action)))
+      }
+      
+      // Define the `ButtonType` strategy protocol
+      private protocol ButtonType {
+          associatedtype ViewType: View
+          
+          @ViewBuilder
+          func render() -> ViewType
+      }
+      
+      // Apply type erasure using `AnyButtonType` to wrap any conformer
+      // to `ButtonType`. A type-erased `ButtonType` strategy
+      private struct AnyButtonType: ButtonType {
+          
+          let _render: () -> AnyView
+          
+          fileprivate init<T: ButtonType>(_ wrapped: T) {
+              self._render = { AnyView(wrapped.render()) }
+          }
+          
+          @ViewBuilder
+          func render() -> some View {
+              self._render()
+          }
+      }
+      
+      // Define concrete destructive strategy
+      private struct Destructive: ButtonType {
+          
+          let label: Text
+          let action: () -> Void
+          
+          @ViewBuilder
+          func render() -> some View {
+              SwiftUI.Button(action: action, label: { label })
+          }
+      }
+      
+      // Define concrete cancel strategy
+      private struct Cancel: ButtonType {
+          
+          let action: () -> Void
+          
+          @ViewBuilder
+          func render() -> some View {
+              SwiftUI.Button(action: action, label: { Text("Cancel") })
+          }
+      }
+      
+      // Expose interface to `ModalCard` to render buttons
+      @ViewBuilder
+      fileprivate func render() -> some View {
+          type.render()
+      }
+      
+      // Define the property storing the `ButtonType` strategy object
+      private var type: AnyButtonType
+      
+      private init(type: AnyButtonType) {
+          self.type = type
+      }
   }
 
   // MARK: - Properties
