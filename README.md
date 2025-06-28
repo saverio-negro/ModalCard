@@ -1005,7 +1005,7 @@ fileprivate func render() -> some View {
 
 4. Then, the context defines an interface to either manipulate the strategy object or have it access the data on the context itself. In our case, our interface involves both the `render()` method — which uses a `fileprivate` access modifier to expose it to `ModalCard` to render buttons — and the static factory methods (Factory Design Pattern) used to produce instances of `ModalCard.Button` with a specific concrete strategy on the `type` property for a determined button-rendering behavior.
 
-##### The Problem with Using `ButtonType` protocol as a Type to the `type` Property
+#### The Problem with Using `ButtonType` protocol as a Type to the `type` Property
 
 Now, at this point, you might have had some doubts about step number 3, where we have the following code:
 
@@ -1105,6 +1105,30 @@ func render() -> some View {
   return self._render()
 }
 ```
+
+Finally, notice how we wrap our concrete strategies (`Destructive` and `Cancel`) within `AnyButtonType` when returning from the static factory methods to type-erase them:
+
+```swift
+// Define static factory methods: semantic API interface for encapsulating internal implementation details
+      
+public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
+    Button(type: AnyButtonType(Destructive(label: label, action: action)))
+}
+
+public static func cancel(_ action: @escaping () -> Void) -> ModalCard.Button {
+    Button(type: AnyButtonType(Cancel(action: action)))
+}
+```
+
+#### Strategy-like Pattern (via Enum) vs Full Strategy Pattern
+
+Let's end this walk-through on the `ModalCard` component by explaining to you why, for this specific component, I decided to stick with the **Strategy-like** pattern using an internal enum for describing different strategies (rendering logic) based on the case (`.destruvtive` and `.cancel`).
+
+Generally, the main reason why you would use the Strategy Design Pattern is when your context class/struct starts getting overwhelmed with bulky conditionals that switch the class's behavior depending on a certain property or parameter.
+
+
+
+
 
 
 
