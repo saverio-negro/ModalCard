@@ -812,7 +812,7 @@ public struct ModalCard: View {
 
   public struct Button {
       
-      // Define static factory methods
+      // Define static factory methods: semantic API interface
       
       public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
           Button(type: AnyButtonType(Destructive(label: label, action: action)))
@@ -846,7 +846,7 @@ public struct ModalCard: View {
           }
       }
       
-      // Define concrete destructive strategy
+      // Define `destructive` concrete strategy
       private struct Destructive: ButtonType {
           
           let label: Text
@@ -858,7 +858,7 @@ public struct ModalCard: View {
           }
       }
       
-      // Define concrete cancel strategy
+      // Define `cancel` concrete strategy
       private struct Cancel: ButtonType {
           
           let action: () -> Void
@@ -935,10 +935,75 @@ public struct ModalCard: View {
 ```
 Let me walk you through the above implementation for `ModalCard.Button`, which uses the _Strategy Design Pattern_ at its fullest, alongside the _Factory Design Pattern_, which we have already gone through.
 
-1. 
+```swift
+// Define the `ButtonType` strategy protocol
+private protocol ButtonType {
+    associatedtype ViewType: View
+    
+    @ViewBuilder
+    func render() -> ViewType
+}
+```
 
+1. The most important aspect to implementing the Strategy pattern is defining a protocol to be adopted by all versions of a certain algorithm or action — the `render()` action, in our specific case. The context struct `ModalCard.Button` uses our `ButtonType` strategy protocol to be able to interchange amongst objects conforming to `ButtonType` at runtime — concrete strategies. Because of that, the `ModalCard.Button` context has the ability to call the rendering action defined by a specific concrete strategy (e.g., `Destructive`).
 
+```swift
+// Define `destructive` concrete strategy
+private struct Destructive: ButtonType {
+    
+    let label: Text
+    let action: () -> Void
+    
+    @ViewBuilder
+    func render() -> some View {
+        SwiftUI.Button(action: action, label: { label })
+    }
+}
 
+// Define `cancel` concrete strategy
+private struct Cancel: ButtonType {
+    
+    let action: () -> Void
+    
+    @ViewBuilder
+    func render() -> some View {
+        SwiftUI.Button(action: action, label: { Text("Cancel") })
+    }
+}
+```
+
+2. The different versions of an algorithm/action are represented by the concrete strategy classes or structs adopting the Strategy interface/protocol. In our case, we defined two concrete strategies — `Destructive` and `Cancel`, both adopting the `ButtonType` strategy protocol.
+
+```swift
+// Define the property storing the `ButtonType` strategy object
+private var type: AnyButtonType
+
+private init(type: AnyButtonType) {
+    self.type = type
+}
+```
+
+3. We then define a reference to a strategy object within our `ModalCard.Button` context struct; specifically, we store the strategy object on the `type` property.
+
+```swift
+// Define static factory methods: semantic API interface
+      
+public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
+    Button(type: AnyButtonType(Destructive(label: label, action: action)))
+}
+
+public static func cancel(_ action: @escaping () -> Void) -> ModalCard.Button {
+    Button(type: AnyButtonType(Cancel(action: action)))
+}
+
+// Expose interface to `ModalCard` to render buttons
+@ViewBuilder
+fileprivate func render() -> some View {
+    type.render()
+}
+```
+
+5. Then, the context defines an interface to either manipulate the strategy object or have it access the data on the context itself. In our case, our interface involves both the `render()` method — which uses a `fileprivate` access modifier to expose it to `ModalCard` to render buttons — as well as the static factory methods (Factory Design Pattern) used to produce instances of `ModalCard.Button` with a specific concrete strategy on the `type` property for a specific button-rendering behavior.
 
 
 
