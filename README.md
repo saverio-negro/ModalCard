@@ -1070,7 +1070,41 @@ fileprivate init<T: ButtonType>(_ wrapped: T) {
 
 Also, notice how generics is a _fundamental_ feature for type erasure: it wouldn't be possible to wrap any concrete strategy type conforming to the `ButtonType` strategy protocol without generics. In our case, we defined a generic type parameter with a `ButtonType` conformance (`T: ButtonType`) for the initializer on `AnyButtonType`. The `AnyButtonType` struct is instantiated with a concrete strategy conforming to `ButtonType`, passed under the `wrapped` parameter — we use the type parameter `T` as its type.
 
+```swift
+// Within the `AnyButtonType` wrapper
 
+let _render: () -> AnyView
+```
+
+The wrapper struct defines a `_render` property, which has a function type `() -> AnyView`. Notice how we are, again, using type erasure; in fact, the function returns a type-erased `View`. That's because `_render` is a stored property, and cannot be assigned an opaque return type. That means we couldn't type-annotate `_render` as `() -> some View`, because Swift would be expecting an initializer expression from which to infer an underlying type. For how we define our initializer within `AnyButtonType`, we are not able to have Swift infer the concrete type that's being hidden by the opaque `some View` type.
+
+For instance, assume we were to assign `_render`, the following closure `{ wrapped.render() }`. Do you think Swift would be able to infer the type of what the `render()` method on the wrapped object conforming to `ButtonType` returns? 
+
+Well, first off, Swift doesn't know, at compilation time, which concrete strategy object conforming to `ButtonType` is going to be wrapped by `AnyButtonType`; hence, it cannot know what's the _actual_ view being returned by the `render()` method. Therefore, the most the Swift compiler can do is know that the `render()` method is returning a `ViewType` associated type, still not a concrete type (`Text`, `Button`, `VStack`) from which Swift can infer. How does it know? Well, we told that `T` is a type conforming to `ButtonType`, and that's all Swift knows.
+
+That's the reason why we used the `AnyView` type-erased `View`, and wrapped whichever object conforming to `View`, being returned by the `render()` method on any of the wrapped concrete strategy object — either `Destructive` or `Cancel`, in our case.
+
+```swift
+// Within the `AnyButtonType` wrapper
+
+fileprivate init<T: ButtonType>(_ wrapped: T) {
+  self._render = { AnyView(wrapped.render()) }
+}
+```
+
+We are allowed to write `AnyView(wrapped.render())`, and Swift won't complain at compilation time, because it knows `AnyView` wraps any object conforming to `View`, and it just so happens that we defined our `ViewType` associated type to conform to `View`. At runtime, Swift will know which object of type `View` we are actually wrapping into `AnyView`.
+
+Finally, we return the result of calling `_render()` from the concrete implementation of `render()` on the `AnyButtonType` struct.
+Since `AnyView` is a concrete type, it's simply inferred by Swift when returned from `render() -> some View`.
+
+```swift
+// Within the `AnyButtonType` wrapper
+
+@ViewBuilder
+func render() -> some View {
+  return self._render()
+}
+```
 
 
 
