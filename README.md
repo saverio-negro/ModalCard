@@ -986,7 +986,7 @@ private init(type: AnyButtonType) {
 3. We then define a reference to a strategy object within our `ModalCard.Button` context struct; specifically, we store the strategy object on the `type` property.
 
 ```swift
-// Define static factory methods: semantic API interface
+// Define static factory methods: semantic API interface for encapsulating internal implementation details
       
 public static func destructive(_ label: Text, _ action: @escaping () -> Void) -> ModalCard.Button {
     Button(type: AnyButtonType(Destructive(label: label, action: action)))
@@ -1003,7 +1003,72 @@ fileprivate func render() -> some View {
 }
 ```
 
-5. Then, the context defines an interface to either manipulate the strategy object or have it access the data on the context itself. In our case, our interface involves both the `render()` method — which uses a `fileprivate` access modifier to expose it to `ModalCard` to render buttons — as well as the static factory methods (Factory Design Pattern) used to produce instances of `ModalCard.Button` with a specific concrete strategy on the `type` property for a specific button-rendering behavior.
+4. Then, the context defines an interface to either manipulate the strategy object or have it access the data on the context itself. In our case, our interface involves both the `render()` method — which uses a `fileprivate` access modifier to expose it to `ModalCard` to render buttons — and the static factory methods (Factory Design Pattern) used to produce instances of `ModalCard.Button` with a specific concrete strategy on the `type` property for a determined button-rendering behavior.
+
+##### The Problem with Using `ButtonType` protocol as a Type to the `type` Property
+
+Now, at this point, you might have had some doubts about step number 3, where we have the following code:
+
+```swift
+// Define the property storing the `ButtonType` strategy object
+private var type: AnyButtonType
+
+private init(type: AnyButtonType) {
+    self.type = type
+}
+```
+
+And asked yourself why we didn't end up with the following code, instead:
+
+```swift
+// Define the property storing the `ButtonType` strategy object
+private var type: ButtonType
+
+private init(type: ButtonType) {
+    self.type = type
+}
+```
+
+The code above would have been more plausible as far as the Strategy Design Pattern is concerned. After all, the context struct is expected to store any concrete strategy conforming to the `ButtonType` protocol to run its specific rendering behavior. So, where is the gotcha?
+
+Well, Swift would have allowed us to write the code right above if we hadn't had an associated type within the definition of our `ButtonType` protocol.
+
+However, the definition of an associated type within our protocol is crucial, in our case, because it allows us to define the different concrete implementations for the `render()` method on each concrete strategy struct (`Destructive` and `Cancel`) to return an opaque return type — `some View`, in our case — which is key to rendering any underlying `View` being inferred by Swift upon returning them.
+
+So, if we had used the `ButtonType` directly as a type to the `type` property — I know, too many "type" words — that wouldn't have worked, and we would have had a compiler error. That's because we _cannot_ use a protocol with an associated type as a _concrete_ type for a stored property. This isn't allowed in Swift.
+
+We know that to accomplish the Strategy pattern, the `type` property on the context struct is meant to wrap any object conforming to the `ButtonType` strategy protocol. Therefore, a solution to this problem is creating a _concrete_ type that wraps any object of type `ButtonType` using generics, and the name for this solution is **Type Erasure**.
+
+In our case, **Type Erasure** will encapsulate different `ButtonType` conformers inside a single `AnyButtonType` wrapper, which will be defined as a struct. As a convention, we tend to name the type-eraser/type-wrapper using the "Any" prefix attached to the name of the type to be erased/wrapped — `ButtonType`, in our case. Therefore, `AnyButtonType` is also said to be a "type-erased" `ButtonType`.
+
+The following is the code for the `AnyButtonType` wrapper struct:
+
+```swift
+private struct AnyButtonType: ButtonType {
+
+  let _render: () -> AnyView
+  
+
+  fileprivate init<T: ButtonType>(_ wrapped: T) {
+    self._render = { AnyView(wrapped.render()) }
+  }
+
+  @ViewBuilder
+  func render() -> some View {
+    return self._render()
+  }
+}
+```
+
+You see that we are now using a concrete type (`AnyButtonType`) that wraps any type conforming to the `ButtonType` protocol. If you think about it, that's a type-erasure operation, in the sense that we don't care about the type that's being wrapped, as long as it conforms to the `ButtonType` protocol. This operation finally erases the type, because the actual type that's being returned is represented by the type-eraser itself, which happens to be `AnyButtonType`, in our specific case. Eventually, the original type of the wrapped object is lost or erased.
+
+```swift
+// Within the `AnyButtonType` wrapper
+
+fileprivate init<T: ButtonType>(_ wrapped: T) {
+```
+
+Also, notice how generics is a _fundamental_ feature for type erasure: it wouldn't be possible to wrap any concrete strategy type conforming to the `ButtonType` strategy protocol without generics. In our case, we defined a generic type parameter with a `ButtonType` conformance (`T: ButtonType`) for the initializer on `AnyButtonType`. The `AnyButtonType` struct is instantiated with a concrete strategy conforming to `ButtonType`, passed under the `wrapped` parameter — we use the type parameter `T` as its type.
 
 
 
