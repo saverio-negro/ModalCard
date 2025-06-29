@@ -1145,6 +1145,29 @@ Also, when using the Strategy pattern, your team can plan for future implementat
 
 However, I invite you to think about a scenario when you may have multiple versions of the same algorithm. In such a case, it's not recommended to keep your code in an `enum`, because it becomes cluttered and it's not even open to the Open/Closed principle from SOLID — open to extension, closed to modification; that is, if you were to expand or update your behaviors, you would be forced to _modify_ your code; on the other hand, if you were using the _full_ Strategy Design Pattern, to embed a new version of an algorithm — rendering our `Button` views, in our case — you would just need to create a new struct that adopts the `ButtonType` strategy protocol. Also, if you had to modify an existing behavior, you keep working on that specific struct that isolates that behavior, keeping your code modularized, flexible, and scalable.
 
+#### Usage Example
+
+Just for clarity's sake, I will repost the code snippet that uses my `ModalCard` component:
+
+```swift
+// At the top of your swift file
+import SwiftUI
+import ModalCard
+
+// Within the `body` computed property of your view
+ModalCard(
+  title: "Delete Account",
+  message: "This action cannot be undone.",
+  primaryButton: .destructive(
+      Text("Delete"),
+      { print("Delete") }
+  ),
+  secondaryButton: .cancel(
+      { print("Cancel") }
+  )
+)
+```
+
 I hope this guide served you well in walking you through the various facets of building adaptive components, and made you realize how simple interfaces hide quite a bit of complexity.
 
 
