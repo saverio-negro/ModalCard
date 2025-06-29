@@ -1126,6 +1126,27 @@ Let's end this walk-through on the `ModalCard` component by explaining to you wh
 
 Generally, the main reason why you would use the Strategy Design Pattern is when your context class/struct starts getting overwhelmed with bulky conditionals that switch the class's behavior depending on a certain property or parameter.
 
+For instance, take our internal enum `ButtonType`:
+
+```swift
+// Within `ModalCard.Button`
+
+private enum ButtonType {
+  case destructive(label: Text, action: () -> Void)
+  case cancel(action: () -> Void)
+}
+```
+
+If it had had multiple conditionals to switch the context struct's behavior, our code would have been a mess, and every time we wanted to change or expand our behaviors, we would have had to _modify_ the code within `enum`, and that's not a best practice for when you have a large codebase.
+
+Instead, with the classic Strategy pattern, we can create as many classes/structs as we have versions of a certain algorithm/behavior, all conforming to the strategy protocol — `ButtonType`, in our case.
+
+Also, when using the Strategy pattern, your team can plan for future implementation/changes for your algorithms, because your codebase becomes flexible and easy to update. In our case, we only have two rendering algorithms/actions (`destructive`, and `cancel`), and that's why I decided to stick with an `enum`, instead of using structs to isolate the complexity of my codebase. 
+
+However, I invite you to think about a scenario when you may have multiple versions of the same algorithm. In such a case, it's not recommended to keep your code in an `enum`, because it becomes cluttered and it's not even open to the Open/Closed principle from SOLID — open to extension, closed to modification; that is, if you were to expand or update your behaviors, you would be forced to _modify_ your code; on the other hand, if you were using the _full_ Strategy Design Pattern, to embed a new version of an algorithm — rendering our `Button` views, in our case — you would just need to create a new struct that adopts the `ButtonType` strategy protocol. Also, if you had to modify an existing behavior, you keep working on that specific struct that isolates that behavior, keeping your code modularized, flexible, and scalable.
+
+I hope this guide served you well in walking you through the various facets of building adaptive components, and made you realize how simple interfaces hide quite a bit of complexity.
+
 
 
 
