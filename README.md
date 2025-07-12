@@ -1,6 +1,6 @@
 # 03 - Slot-Based and Adaptive Layouts with `ModalCard` view
 
-<img src="./ModalCard.gif" width="25%" height="25%"/>
+<img src="./ModalCard.gif" width="25%"/>
 
 ## Introduction
 
